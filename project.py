@@ -20,13 +20,17 @@ import bokeh
 
 from bokeh.plotting import figure, output_file, save
 
-manhattan = cleaned_data[cleaned_data['location'] == 'Surface Area - Manhattan']
-bronx = cleaned_data[cleaned_data['location'] == 'Surface Area - Bronx']
-brooklyn = cleaned_data[cleaned_data['location'] == 'Surface Area - Brooklyn']
-queens = cleaned_data[cleaned_data['location'] == 'Surface Area - Queens']
-statenisland = cleaned_data[cleaned_data['location'] == 'Surface Area - Staten Island']
+cleaned_data['location'] = cleaned_data['location'].astype('str')
+
+manhattan = cleaned_data[cleaned_data['location'].str.contains('Manhattan')]
+bronx = cleaned_data[cleaned_data['location'].str.contains('Bronx')]
+brooklyn = cleaned_data[cleaned_data['location'].str.contains('Brooklyn')]
+queens = cleaned_data[cleaned_data['location'].str.contains('Queens')]
+statenisland = cleaned_data[cleaned_data['location'].str.contains('Staten Island')]
 
 p = figure(title="Homeless per Year by Borough", )
+output_file('graph1.html')
+
 #p1.grid.grid_line_alpha=0.3
 p.xaxis.axis_label="Year"
 p.yaxis.axis_label="Number of Homeless People"
@@ -37,9 +41,14 @@ p.line(brooklyn['year'], brooklyn['qty'], color="green")
 p.line(queens['year'], queens['qty'], color="yellow")
 p.line(statenisland['year'], statenisland['qty'], color="black")
 
-print('\n\n', cleaned_data['location'])
+print('\n\n', 'Man' in cleaned_data.iloc[0]['location'])
 
-output_file('graph1.html')
+print("""
+Manhattan
+Years: %s
+Quantity: %s
+""" % (manhattan['year'], manhattan['qty']))
+
 save(p)
 
 #from bokeh.charts import Donut, save, output_file
